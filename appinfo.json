@@ -1,0 +1,33 @@
+{
+  "uuid": "1b1b20fb-7ab7-4bf8-9741-6ac82687d983",
+  "shortName": "gubiFace",
+  "longName": "gubiFace",
+  "companyName": "Gubi, Inc.",
+  "versionCode": 1,
+  "versionLabel": "1.0",
+  "sdkVersion": "3",
+  "targetPlatforms": ["aplite", "basalt"],
+  "watchapp": {
+    "watchface": true
+  },
+  "appKeys": {
+    "dummy": 0
+  },
+  "resources": {
+    "media": [
+      {
+        "type": "font",
+        "name": "FONT_PERFECT_DOS_48",
+        "file": "perfect-dos-vga.ttf",
+        "compatibility":"2.7"
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_BACKGROUND",
+        "file": "background.png"
+      }
+    ]
+  },
+  "capabilities":
+    [ "location" ]
+}
