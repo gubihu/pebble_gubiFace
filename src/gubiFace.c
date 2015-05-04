@@ -90,7 +90,31 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 }
 
 static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
+  // Read first item
+  Tuple *t = dict_read_first(iterator);
+  static char lat_buffer[32];
+  static char lon_buffer[32];
 
+  // For all items
+  while(t != NULL) {
+    // Which key was received?
+    switch(t->key) {
+    case KEY_TEMPERATURE:
+	  snprintf(lat_buffer, sizeof(lat_buffer), "%s", t->value->cstring);
+	  APP_LOG(APP_LOG_LEVEL_INFO, "lat: %s.",  t->value->cstring); 
+      break;
+    case KEY_CONDITIONS:
+	  snprintf(lon_buffer, sizeof(lon_buffer), "%s", t->value->cstring);
+	  APP_LOG(APP_LOG_LEVEL_INFO, "lon: %s.", lon_buffer); 
+      break;
+    default:
+      APP_LOG(APP_LOG_LEVEL_ERROR, "Key %d not recognized!", (int)t->key);
+      break;
+    }
+
+    // Look for next item
+    t = dict_read_next(iterator);
+  }
 }
 
 static void inbox_dropped_callback(AppMessageResult reason, void *context) {

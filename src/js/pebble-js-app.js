@@ -1,8 +1,28 @@
+
 function locationSuccess(pos) {
   // We will request the weather here
   var url = 'http://api.openweathermap.org/data/2.5/weather?lat=' +
 	pos.coords.latitude + '&lon=' + pos.coords.longitude;
     console.log(url);
+  var lat = 'l:'+pos.coords.latitude;
+  var lon = 'l:'+pos.coords.longitude;
+
+	// Assemble dictionary using our keys
+	var dictionary = {
+		'KEY_TEMPERATURE': lat,
+		'KEY_CONDITIONS': lon
+	};
+
+	// Send to Pebble
+	Pebble.sendAppMessage(dictionary,
+        function(e) {
+			console.log('Weather info sent to Pebble successfully!');
+		},
+		function(e) {
+			console.log('Error sending weather info to Pebble!');
+		}
+	);
+
 }
 
 function locationError(err) {
@@ -38,6 +58,7 @@ Pebble.addEventListener('ready',
 Pebble.addEventListener('appmessage',
   function(e) {
     console.log('AppMessage received!');
+	  getWeather();
   }                     
 );
 
