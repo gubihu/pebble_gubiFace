@@ -1,35 +1,42 @@
 {
-  "uuid": "1b1b20fb-7ab7-4bf8-9741-6ac82687d983",
-  "shortName": "gubiFace",
-  "longName": "gubiFace",
-  "companyName": "Gubi, Inc.",
-  "versionCode": 1,
-  "versionLabel": "1.0",
-  "sdkVersion": "3",
-  "targetPlatforms": ["aplite", "basalt"],
-  "watchapp": {
-    "watchface": true
-  },
-  "appKeys": {
-    "dummy": 0,
-    "KEY_TEMPERATURE": 0,
-    "KEY_CONDITIONS": 1
-  },
-  "resources": {
-    "media": [
-      {
-        "type": "font",
-        "name": "FONT_PERFECT_DOS_48",
-        "file": "perfect-dos-vga.ttf",
-        "compatibility":"2.7"
-      },
-      {
-        "type": "png",
-        "name": "IMAGE_BACKGROUND",
-        "file": "background.png"
-      }
-    ]
-  },
-  "capabilities":
-    [ "location" ]
+    "appKeys": {
+        "KEY_LAT_FRAC": 2,
+        "KEY_LAT_INT": 1,
+        "KEY_LON_FRAC": 4,
+        "KEY_LON_INT": 3,
+        "dummy": 0
+    },
+    "capabilities": [
+        "location"
+    ],
+    "companyName": "Gubi, Inc.",
+    "longName": "gubiFace",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/background.png",
+                "name": "IMAGE_BACKGROUND",
+                "type": "png"
+            },
+            {
+                "compatibility": "2.7",
+                "file": "fonts/perfect-dos-vga.ttf",
+                "name": "FONT_PERFECT_DOS_48",
+                "type": "font"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "gubiFace",
+    "targetPlatforms": [
+        "aplite",
+        "basalt"
+    ],
+    "uuid": "1b1b20fb-7ab7-4bf8-9741-6ac82687d983",
+    "versionCode": 1,
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": true
+    }
 }

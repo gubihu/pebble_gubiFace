@@ -4,13 +4,17 @@ function locationSuccess(pos) {
   var url = 'http://api.openweathermap.org/data/2.5/weather?lat=' +
 	pos.coords.latitude + '&lon=' + pos.coords.longitude;
     console.log(url);
-  var lat = 'l:'+pos.coords.latitude;
-  var lon = 'l:'+pos.coords.longitude;
+  var lat_int = parseInt(pos.coords.latitude);
+  var lon_int = parseInt(pos.coords.longitude);
+  var lat_frac = parseInt(Math.abs(pos.coords.latitude-lat_int+0.0005)*1000);
+  var lon_frac = parseInt(Math.abs(pos.coords.longitude-lon_int+0.0005)*1000);
 
 	// Assemble dictionary using our keys
 	var dictionary = {
-		'KEY_TEMPERATURE': lat,
-		'KEY_CONDITIONS': lon
+		'KEY_LAT_INT': lat_int,
+		'KEY_LON_INT': lon_int,
+		'KEY_LAT_FRAC': lat_frac,
+		'KEY_LON_FRAC': lon_frac,
 	};
 
 	// Send to Pebble
