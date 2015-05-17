@@ -1,7 +1,9 @@
 #include <pebble.h>
 
-#define KEY_TEMPERATURE 0
-#define KEY_CONDITIONS 1
+#define KEY_LAT_INT 1
+#define KEY_LAT_FRAC 2
+#define KEY_LON_INT 3
+#define KEY_LON_FRAC 4
 
 static Window *s_main_window;
 static TextLayer *s_time_layer;
@@ -87,9 +89,61 @@ static void main_window_unload(Window *window) {
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
   update_time(tick_time);
+  // Get weather update every 30 minutes
+  if(tick_time->tm_min % 2 == 0) {
+    // Begin dictionary
+    DictionaryIterator *iter;
+    app_message_outbox_begin(&iter);
+
+    // Add a key-value pair
+    dict_write_uint8(iter, 0, 0);
+
+    // Send the message!
+    app_message_outbox_send();
+  }
 }
 
 static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
+  // Read first item
+  Tuple *t = dict_read_first(iterator);
+  static char lat_buffer[32];
+  static char lon_buffer[32];
+  static char pos_buffer[64];
+  int lat_int = 0, lon_int = 0, lat_frac = 0, lon_frac = 0;
+  
+  // For all items
+  while(t != NULL) {
+    // Which key was received?
+    switch(t->key) {
+    case KEY_LAT_INT:
+      lat_int = (int)(t->value->int32);
+	    APP_LOG(APP_LOG_LEVEL_INFO, "lat_int: %d.",  lat_int); 
+      break;
+    case KEY_LON_INT:
+      lon_int = (int)t->value->int32;
+	    APP_LOG(APP_LOG_LEVEL_INFO, "lon_int: %d.", lon_int); 
+      break;
+    case KEY_LAT_FRAC:
+      lat_frac = (int)(t->value->int32);
+	    APP_LOG(APP_LOG_LEVEL_INFO, "lat_frac: %d.",  lat_frac); 
+      break;
+    case KEY_LON_FRAC:
+      lon_frac = (int)t->value->int32;
+	    APP_LOG(APP_LOG_LEVEL_INFO, "lon_frac: %d.", lon_frac); 
+      break;
+    default:
+      APP_LOG(APP_LOG_LEVEL_ERROR, "Key %d not recognized!", (int)t->key);
+      break;
+    }
+    // Look for next item
+    t = dict_read_next(iterator);
+  }
+  snprintf(lat_buffer, sizeof(lat_buffer), "%d.%3.3d", lat_int, lat_frac);
+	snprintf(lon_buffer, sizeof(lon_buffer), "%d.%3.3d", lon_int, lon_frac);
+  APP_LOG(APP_LOG_LEVEL_INFO, "Reveived lat: %s. lon: %s.", lat_buffer, lon_buffer);
+  // Assemble full string and display
+  snprintf(pos_buffer, sizeof(pos_buffer), "%s, %s", lat_buffer, lon_buffer);
+  text_layer_set_text(s_weather_layer, pos_buffer);
 
 }
 
