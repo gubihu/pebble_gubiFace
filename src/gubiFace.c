@@ -89,6 +89,18 @@ static void main_window_unload(Window *window) {
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
   update_time(tick_time);
+  // Get weather update every 30 minutes
+  if(tick_time->tm_min % 2 == 0) {
+    // Begin dictionary
+    DictionaryIterator *iter;
+    app_message_outbox_begin(&iter);
+
+    // Add a key-value pair
+    dict_write_uint8(iter, 0, 0);
+
+    // Send the message!
+    app_message_outbox_send();
+  }
 }
 
 static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
@@ -96,6 +108,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
   Tuple *t = dict_read_first(iterator);
   static char lat_buffer[32];
   static char lon_buffer[32];
+  static char pos_buffer[64];
   int lat_int = 0, lon_int = 0, lat_frac = 0, lon_frac = 0;
   
   // For all items
@@ -128,6 +141,10 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
   snprintf(lat_buffer, sizeof(lat_buffer), "%d.%3.3d", lat_int, lat_frac);
 	snprintf(lon_buffer, sizeof(lon_buffer), "%d.%3.3d", lon_int, lon_frac);
   APP_LOG(APP_LOG_LEVEL_INFO, "Reveived lat: %s. lon: %s.", lat_buffer, lon_buffer);
+  // Assemble full string and display
+  snprintf(pos_buffer, sizeof(pos_buffer), "%s, %s", lat_buffer, lon_buffer);
+  text_layer_set_text(s_weather_layer, pos_buffer);
+
 }
 
 static void inbox_dropped_callback(AppMessageResult reason, void *context) {
